@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Arial';
+    }
+
+    main {
+        height: 100vh;
+        width: 100vw;
+        display: grid;
+        place-content: center;
+    }
+
+    div#game-container {
+        width: 424px;
+        height: 424px;
+        background: black;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 5px;
+    }
+
+    div.row {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        gap: 5px;
+    }
+
+    div.box {
+        flex: 1;
+        background: white;
+        display: grid;
+        place-content: center;
+    }
+
+    div.box span {
+        font-size: 128px;
+        vertical-align: super;
+        pointer-events: none;
+    }
+
+</style>
+<body>
+    <main>
+        <div id="game-container">
+            <div class="row">
+                <div class="box" onclick="populateBox(event, 0)"><span></span></div>
+                <div class="box" onclick="populateBox(event, 1)"><span></span></div>
+                <div class="box" onclick="populateBox(event, 2)"><span></span></div>
+            </div>
+            <div class="row">
+                <div class="box" onclick="populateBox(event, 3)"><span></span></div>
+                <div class="box" onclick="populateBox(event, 4)"><span></span></div>
+                <div class="box" onclick="populateBox(event, 5)"><span></span></div>
+            </div>
+            <div class="row">
+                <div class="box" onclick="populateBox(event, 6)"><span></span></div>
+                <div class="box" onclick="populateBox(event, 7)"><span></span></div>
+                <div class="box" onclick="populateBox(event, 8)"><span></span></div>
+            </div>
+        </div>
+    </main>
+    <script>
+        let start = prompt("Start as 'o' or 'x'?");
+        while(start !== "x" && start !== "o") {
+            start = prompt("Invalid input, please choose betwen 'o' or 'x' only.");
+        }
+
+        let turn = start === 'o' ? 1 : 0;
+        let gameState = [null, null, null, null, null, null, null, null, null];
+        const winningCombo = [
+            [0, 1, 2],
+            [0, 3, 6],
+            [0, 4, 8],
+            [1, 4, 7],
+            [2, 4, 6],
+            [2, 5, 8],
+            [3, 4, 5],
+            [6, 7, 8]
+        ]
+
+        function populateBox(event, index) {
+            const symbol = turn ? "o" : "x"
+            event.target.querySelector("span").innerText = symbol;
+            gameState[index] = symbol;
+            
+            event.target.onclick = "";
+            turn = turn ? 0 : 1;
+
+            checkWinner();
+        }
+
+        function checkWinner() {
+            for (const combination of winningCombo) {
+                if(!gameState[combination[0]] || !gameState[combination[1]] || !gameState[combination[2]]) continue;
+                if(gameState[combination[0]] === gameState[combination[1]] && gameState[combination[1]] === gameState[combination[2]]) {
+                    const player = gameState[combination[0]] === start ? 1 : 2;
+                    setTimeout(() => alert(`We have a winner! Congratulations to Player ${player}`), 150);
+                    Array.from(document.querySelectorAll(".box")).forEach((box) => box.onclick = "");
+                    break;
+                }
+            }
+        }
+
+        
+    </script>
+</body>
+</html>
